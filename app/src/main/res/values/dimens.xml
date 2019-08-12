@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--计算size的公式: (70*n) -30  n为部件所需的大小(占几格) -->
+    <dimen name="widget_1">40dp</dimen>
+    <dimen name="widget_2">110dp</dimen>
+    <dimen name="widget_3">180dp</dimen>
+    <dimen name="widget_4">250dp</dimen>
+</resources>

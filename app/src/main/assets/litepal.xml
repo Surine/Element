@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<litepal>
+    <dbname value="element"/>
+
+    <!--更新数据库时需升级版本号-->
+    <version value="1" />
+
+    <list>
+        <mapping class = "cn.surine.element.bean.WidgetInfo"/>
+    </list>
+</litepal>
