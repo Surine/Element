@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/touchPadding"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/widget_no_view_color"
     >
-    <TextView
+
+    <ImageView
+        android:id="@+id/touchRect"
+        android:background="#6326C6DA"
+        android:scaleType="fitXY"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/widget_tv_no_view"
-        android:text="@string/no_view"
-        android:textColor="@color/white"
-        android:gravity="center"
-        />
+       />
 </FrameLayout>

@@ -91,17 +91,20 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        addPill.setOnClickListener(new View.OnClickListener() {
+
+
+        parseJson.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(id == -1){
                     return;
                 }
                 currentView.setAppWidgetId(id);
-                currentView.setCustomWidgetId(PillsWidget.class.getName());
+                currentView.setCustomWidgetId("测试服");
                 currentView.setJson(json);
                 if(currentView.save()){
                     Toast.makeText(MainActivity.this, "success", Toast.LENGTH_SHORT).show();
+                    Action.sendUpdate(MainActivity.this);
                 }else{
                     Toast.makeText(MainActivity.this, "fail", Toast.LENGTH_SHORT).show();
                 }
