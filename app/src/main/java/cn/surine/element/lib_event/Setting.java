@@ -3,6 +3,8 @@ package cn.surine.element.lib_event;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 
+import cn.surine.element.base.controller.App;
+
 /**
  * Intro：控制设置项
  * @author sunliwei
@@ -13,9 +15,9 @@ public class Setting {
     /**
      * 开关wifi
      * */
-    public static boolean toggleWiFi(Context context) {
+    public static boolean toggleWiFi() {
         int wifiStatus;
-        WifiManager wm = (WifiManager) context
+        WifiManager wm = (WifiManager) App.getContext().getApplicationContext()
                 .getSystemService(Context.WIFI_SERVICE);
         if(wm != null){
             wifiStatus = wm.getWifiState();
@@ -29,5 +31,25 @@ public class Setting {
         }
         return false;
     }
+
+
+    /**打开wifi*/
+    public static void openWifi(){
+        WifiManager wm = (WifiManager) App.getContext().getApplicationContext()
+                .getSystemService(Context.WIFI_SERVICE);
+        if(wm != null){
+            wm.setWifiEnabled(true);
+        }
+    }
+
+    /**关闭wifi*/
+    public static void closeWifi(){
+        WifiManager wm = (WifiManager) App.getContext().getApplicationContext()
+                .getSystemService(Context.WIFI_SERVICE);
+        if(wm != null){
+            wm.setWifiEnabled(false);
+        }
+    }
+
 
 }

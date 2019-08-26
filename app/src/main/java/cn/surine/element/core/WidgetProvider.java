@@ -3,199 +3,157 @@ package cn.surine.element.core;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import org.litepal.LitePal;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import cn.surine.element.BuildConfig;
 import cn.surine.element.R;
 import cn.surine.element.base.BaseConfig;
+import cn.surine.element.base.utils.CurdManager;
+import cn.surine.element.base.utils.GsonHelper;
+import cn.surine.element.base.utils.Logs;
+import cn.surine.element.base.utils.Toasts;
 import cn.surine.element.bean.WidgetInfo;
-import cn.surine.element.main.Action;
-import cn.surine.element.main.WidgetsManager;
+import cn.surine.element.bean.product.Product;
+import cn.surine.element.lib_event.Action;
+import cn.surine.element.ui.MainActivity;
 
-import static cn.surine.element.base.BaseConfig.APP_WIDGET_ID;
+import static cn.surine.element.base.BaseConfig.ACTION_SUB_EVENT;
 import static cn.surine.element.base.BaseConfig.PKG;
 
 /**
- * Intro：基础承载
+ * Intro：
+ *
  * @author sunliwei
- * @date 2019-08-10 15:20
+ * @date 2019-08-14 10:32
  */
 public class WidgetProvider extends AppWidgetProvider {
-
-    private static final String TAG = "WidgetProvider";
-    //点击事件唯一标示
-    private static int REQUEST_CODE_IN_PROVIDER = 0;
-
-    @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
-
-        //pass context
-        WidgetsManager.getInstance().setContext(context);
-
-        for (int i:
-             appWidgetIds) {
-            Log.d(TAG,"onUpdate:"+i);
-        }
-
-//        for (int i = 0; i < appWidgetIds.length; i++) {
-//            Intent intent = new Intent(context,WidgetService.class);
-//            context.startService(intent);
-//        }
-
-
-        RemoteViews remoteViews = new RemoteViews(PKG, R.layout.widget_no_view);
-
-//        for (int i = 0; i < appWidgetIds.length; i++) {
-//            root = WidgetsManager.getInstance().get(context,appWidgetIds[i]).build(context);
-//        }
-
-        for(int i = 0; i < appWidgetIds.length; i++) {
-            int currentId = appWidgetIds[i];
-
-
-            Intent intent = new Intent(Action.NO_VIEW_CLICK_EVENT);
-            intent.putExtra(APP_WIDGET_ID,currentId);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE_IN_PROVIDER++, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteViews.setOnClickPendingIntent(R.id.widget_tv_no_view, pendingIntent);
-
-            //根据当前扫描id获取存储的view
-            remoteViews.setTextViewText(R.id.widget_tv_no_view,"无视图，点此前往Element加载视图,Id:"+currentId);
-
-            WidgetInfo widgetInfo = new WidgetInfo(currentId,"",null);
-            if(LitePal.where("appWidgetId = ?", String.valueOf(currentId)).find(WidgetInfo.class).size() == 0){
-                widgetInfo.save();
-            }
-
-            appWidgetManager.updateAppWidget(currentId,remoteViews);
-        }
-    }
+    private static int CURRENT = 0;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
 
-        OnDispatchListener listener = null;
+        Logs.d("onreceive");
+        Logs.d("收到信息"+intent.getAction());
 
-
-        if(Action.UPDATA.equals(intent.getAction())){
-            //扫描一遍数据库
-            List<WidgetInfo> list = LitePal.findAll(WidgetInfo.class);
-            for (WidgetInfo widgetInfo:list) {
-                //更新
-                Widget widget = WidgetsManager.getInstance().get(widgetInfo.getAppWidgetId());
-                if(widget != null){
-                    RemoteViews remoteViews = widget.build(context);
-//                    RemoteViews remoteViews = widget.build(context, widgetInfo.getAppWidgetId());
-                    updateRemoteUi(context,widgetInfo.getAppWidgetId(),remoteViews);
-                }
+        Toasts.toto("收到消息"+intent.getAction()+intent.getStringExtra(ACTION_SUB_EVENT));
+        //接受广播式更新
+        if(Action.UPDATE.equals(intent.getAction())
+                || Action.MY_UPDATE.equals(intent.getAction())
+        ||Action.UPDATE_OPTIONS.equals(intent.getAction())){
+        AppWidgetManager am = AppWidgetManager.getInstance(context);
+        int[] appWidgetIds = am.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
+            for (int i = 0; i < appWidgetIds.length; i++) {
+                updateInit(context, am, appWidgetIds[i]);
             }
-
         }
 
-        //如果是点击了空视图，就打开添加View的activity
-        if(Action.NO_VIEW_CLICK_EVENT.equals(intent.getAction())){
-            ComponentName componentName = new ComponentName(PKG,PKG+".ui.MainActivity");
-            Intent openAddView = new Intent();
-            openAddView.putExtra(APP_WIDGET_ID,intent.getIntExtra(APP_WIDGET_ID,-1));
-            openAddView.setComponent(componentName);
-            openAddView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(openAddView);
-            return;
-        }
-
-
-        if(listener == null){
-           int widgetId = intent.getIntExtra(APP_WIDGET_ID,-1);
-           if(widgetId != -1){
-               try {
-                   listener =  WidgetsManager.getInstance().getDispatchListener(widgetId);
-                   //将接收器接收到的点击事件分发给WidgetsManager里的监听器，由其完成事件解析，交给实际接收监听器
-                   listener.onDispatch(context,intent);
-               }catch (Exception e){
-                   e.printStackTrace();
-               }
-           }else{
-               //Toast.makeText(context, "系统内部错误", Toast.LENGTH_SHORT).show();
-           }
+        if(Action.IMAGE_CLICK.equals(intent.getAction())){
+            EventManager.getInstance().getOnDispatchListener().onDispatch(context,intent);
         }
     }
 
     @Override
     public void onEnabled(Context context) {
+        Logs.d("onenable");
         super.onEnabled(context);
-        Log.d(TAG,"onEnabled: first add");
     }
 
-
-
-//    /**
-//     * 更新方法
-//     * */
-//    public static void updateRemoteUi(RemoteViews root, Context context){
-//        ComponentName componentName = new ComponentName(context,WidgetProvider.class);
-//        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-//        appWidgetManager.updateAppWidget(componentName, root);
-//    }
-
-
-    /**
-     * 不推荐
-     * */
-    public static void updateRemoteUi(Context context,int appWidgetId){
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        appWidgetManager.updateAppWidget(appWidgetId,WidgetsManager.getInstance().get(appWidgetId).build(WidgetsManager.getInstance().getContext()));
-    }
-
-
-    /**
-     * 优先使用此方法更新，节省内存消耗
-     * */
-    public static void updateRemoteUi(Context context,int appWidgetId,RemoteViews remoteViews){
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        appWidgetManager.updateAppWidget(appWidgetId,remoteViews);
-    }
-
-
-    /**
-     * 初次add或大小改变
-     * */
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
-        Log.d(TAG,"onAppWidgetOptionsChanged:"+appWidgetId);
+        Logs.d("onAppWidgetOptionsChanged");
+
+        int a = newOptions.getInt("appWidgetMinWidth");
+        int b = newOptions.getInt("appWidgetMaxHeight");
+        int c = newOptions.getInt("appWidgetMaxWidth");
+        int d = newOptions.getInt("appWidgetMinHeight");
+        Logs.d(a+"/"+b+"/"+c+"/"+d);
+
+        List<WidgetInfo> list = LitePal.where("appWidgetId = ?", String.valueOf(appWidgetId)).find(WidgetInfo.class);
+        WidgetInfo currentInfo;
+        if(list.size() > 0){
+            currentInfo = list.get(0);
+            currentInfo.setWidth(a);
+            currentInfo.setHeight(b);
+            currentInfo.save();
+        }
+
+      //  updateInit(context, appWidgetManager, appWidgetId);
+
     }
 
-
-    /**
-     * 被删除时
-     * */
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         super.onDeleted(context, appWidgetIds);
-        for (int i:
-             appWidgetIds) {
-            Log.d(TAG,"onDeleted:"+i);
-            LitePal.deleteAll(WidgetInfo.class,"appWidgetId=?",String.valueOf(i));
+        Logs.d("onDeleted");
+        for (int appId:appWidgetIds) {
+            if(LitePal.delete(WidgetInfo.class,appId) >= 1){
+                Toasts.toto("删除成功");
+            }else {
+                Toasts.toto("删除失败，请尝试清除app数据");
+            }
         }
     }
 
     @Override
     public void onDisabled(Context context) {
         super.onDisabled(context);
-        Log.d(TAG,"onDisabled:last removed");
+    }
+
+
+    @Override
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
+        Logs.d("onupdate");
+        for (int i = 0; i < appWidgetIds.length; i++) {
+            updateInit(context, appWidgetManager, appWidgetIds[i]);
+        }
+    }
+
+
+    public static void updateInit(Context context, AppWidgetManager appWidgetManager, int appWidgetId){
+
+        //注册初始化时的事件
+        RemoteViews remoteViews = new RemoteViews(PKG,R.layout.widget_init);
+        Intent intent = new Intent(context,MainActivity.class);
+        intent.putExtra(BaseConfig.APP_WIDGET_ID,appWidgetId);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context,CURRENT++,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteViews.setOnClickPendingIntent(R.id.btn_no_view,pendingIntent);
+
+
+        //保存小部件
+        WidgetInfo widgetInfo = new WidgetInfo(appWidgetId,"",null,0,0);
+        if(CurdManager.getWidgetById(appWidgetId).size() == 0){
+            widgetInfo.save();
+        }
+
+
+        List<WidgetInfo> list = CurdManager.getWidgetById(appWidgetId);
+        if(list != null && list.size() > 0){
+            if(list.get(0).getWidth() == 0 || list.get(0).getHeight() == 0){
+                return;
+            }
+            if(list.get(0).getJson() != null && !list.get(0).getJson().isEmpty()){
+                remoteViews = RemoteViewDrawer.getInstance(context,list.get(0).getWidth(),list.get(0).getHeight(),GsonHelper.abt.getInstance().parseData(list.get(0).getJson(), Product.class).getRootView(),list.get(0).getAppWidgetId()).getRemote();
+            }
+        }
+
+        try {
+            appWidgetManager.updateAppWidget(appWidgetId,remoteViews);
+        }catch (Exception e){
+            Toasts.toto("内存异常");
+            e.printStackTrace();
+        }
     }
 }

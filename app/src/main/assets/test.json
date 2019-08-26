@@ -1,0 +1,32 @@
+{
+  "productInfo": {
+    "versionCode":1,
+    "name":"测试小部件",
+    "description":"一个聊天小部件",
+    "author":"Surine",
+    "contact":"coolapk@洛必达不忧伤",
+    "tags":[
+      "classic","chat"
+    ]
+  },
+  "rootView": {
+    "action": "ELEMENT_CLICK|NULL|NULL",
+    "width": -1,
+    "height": -1,
+    "views": [
+      {
+        "type":"Image",
+        "action": "IMAGE_CLICK|NULL|NULL",
+        "width": 100,
+        "height": 100,
+        "x_offset": 0,
+        "y_offset": 0,
+        "properties": [
+          {"propertyName":"src","propertyType":"int","propertyValue":"默认头像src"},
+          {"propertyName":"corners","propertyType":"int","propertyValue":"0"}
+        ]
+      }
+    ]
+  }
+
+}

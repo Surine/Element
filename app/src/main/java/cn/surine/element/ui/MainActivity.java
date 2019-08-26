@@ -1,20 +1,29 @@
 package cn.surine.element.ui;
 
+import android.media.AudioManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.eclipsesource.v8.V8;
+import com.eclipsesource.v8.V8Array;
+
 import org.litepal.LitePal;
 
+import java.io.ObjectStreamException;
 import java.util.List;
 
 import cn.surine.element.R;
 import cn.surine.element.base.controller.BaseActivity;
+import cn.surine.element.base.utils.AssetHelper;
+import cn.surine.element.base.utils.Logs;
+import cn.surine.element.base.utils.Toasts;
 import cn.surine.element.bean.WidgetInfo;
-import cn.surine.element.core.WidgetProvider;
-import cn.surine.element.main.PillsWidget;
-import cn.surine.element.main.SettingWidget;
+import cn.surine.element.lib_event.Action;
+import cn.surine.element.lib_event.Common;
+import cn.surine.element.lib_js_runner.JsEngine;
+import cn.surine.element.lib_js_runner.JsSelector;
 
 import static cn.surine.element.base.BaseConfig.APP_WIDGET_ID;
 
@@ -23,6 +32,8 @@ public class MainActivity extends BaseActivity {
     private Button db;
     private Button addSetting;
     private Button addPill;
+    private Button js;
+    private Button parseJson;
     private WidgetInfo currentView = new WidgetInfo();
 
     /**
@@ -48,6 +59,8 @@ public class MainActivity extends BaseActivity {
         db = findViewById(R.id.db);
         addSetting = findViewById(R.id.addSetting);
         addPill = findViewById(R.id.addPill);
+        parseJson = findView(R.id.parseJson);
+        js = findView(R.id.js);
 
         final int id = getIntent().getIntExtra(APP_WIDGET_ID,-1);
         if(id != -1){
@@ -61,41 +74,7 @@ public class MainActivity extends BaseActivity {
         db.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(id == -1){
-                    return;
-                }
-                List<WidgetInfo> widgetInfoList = LitePal.findAll(WidgetInfo.class);
-                for (WidgetInfo widgetInfo :widgetInfoList) {
-                    Log.d("slw",widgetInfo.getAppWidgetId()+"widget");
-                    Log.d("slw",widgetInfo.getCustomWidgetId()+"custom");
-                    Log.d("slw",widgetInfo.getJson()+"json");
-               //     WidgetProvider.updateRemoteUi(WidgetsManager.getInstance().get(widgetInfo.getAppWidgetId()).build(WidgetsManager.getInstance().getContext()),MainActivity.this);
-                    WidgetProvider.updateRemoteUi(MainActivity.this,id);
-                }
-            }
-        });
-        addSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(id == -1){
-                    return;
-                }
-                currentView.setAppWidgetId(id);
-                currentView.setCustomWidgetId(SettingWidget.class.getName());
-                currentView.setJson(json);
-                if(currentView.save()){
-                    Toast.makeText(MainActivity.this, "success", Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(MainActivity.this, "fail", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-
-
-        parseJson.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                String json = AssetHelper.getWidgetJson(MainActivity.this,"test.json");
                 if(id == -1){
                     return;
                 }
@@ -110,6 +89,40 @@ public class MainActivity extends BaseActivity {
                 }
             }
         });
+
+
+
+        parseJson.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String json = AssetHelper.getWidgetJson(MainActivity.this,"plan2_chat.json");
+                if(id == -1){
+                    return;
+                }
+                currentView.setAppWidgetId(id);
+                currentView.setCustomWidgetId("测试服");
+                currentView.setJson(json);
+                if(currentView.save()){
+                    Toast.makeText(MainActivity.this, "success", Toast.LENGTH_SHORT).show();
+                    Action.sendUpdate(MainActivity.this);
+                }else{
+                    Toast.makeText(MainActivity.this, "fail", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        js.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                excuJs();
+            }
+        });
     }
+
+    private void excuJs() {
+      //  Logs.d(""+JsSelector.excuMethodAsset("1.js","openWifiJs"));
+        JsSelector.excuAsset("1.js");
+    }
+
 
 }

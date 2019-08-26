@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".base.controller.App"
@@ -15,23 +17,59 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ui.function_event_page.EventActivity"></activity>
+        <activity android:name=".ui.function_edit.EditActivity" />
 
-        <activity android:name=".ui.MainActivity"
-            >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/paths" />
+        </provider>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <service
+            android:name=".core.widget_service.ForegroundService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".core.widget_service.KeepService"
+            android:enabled="true"
+            android:exported="true" />
+        <!-- 隐藏后台 -->
+        <!-- android:excludeFromRecents="true" -->
+        <activity android:name=".ui.CoreActivity">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity android:name=".ui.MainActivity">
+
+             <intent-filter>
+             <action android:name="android.intent.action.MAIN" />
+
+
+             <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
         </activity>
 
         <receiver
             android:name=".core.WidgetProvider"
-            android:label="Element 4*2">
+            android:label="Element 4*4">
             <intent-filter>
+                <action android:name="wake_up" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="image_view_click" />
-                <action android:name="no_view_click_event"/>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE_OPTIONS" />
+                <!-- 广播式更新，正常情况,手动更新 -->
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE_MY" />
+                <!-- 图片点击事件 -->
+                <action android:name="IMAGE_CLICK" />
+                <!-- 小部件默认点击事件 -->
+                <action android:name="ELEMENT_CLICK" />
             </intent-filter>
 
             <meta-data

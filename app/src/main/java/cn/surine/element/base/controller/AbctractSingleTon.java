@@ -3,8 +3,7 @@ package cn.surine.element.base.controller;
 import android.os.Bundle;
 
 /**
- * Intro：
- *
+ * Intro：singleton abstract
  * @author sunliwei
  * @date 2019-06-22 23:10
  */

@@ -33,5 +33,25 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="15dp"
         android:layout_marginTop="115dp"
-        android:text="Database" />
+        android:text="Circle" />
+
+    <Button
+        android:id="@+id/parseJson"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="170dp"
+        android:text="Chat" />
+
+    <Button
+        android:id="@+id/js"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="233dp"
+        android:text="Js" />
 </RelativeLayout>

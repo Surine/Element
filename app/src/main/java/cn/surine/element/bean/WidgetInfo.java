@@ -20,13 +20,38 @@ public class WidgetInfo extends LitePalSupport {
     /**对应的小部件属性*/
     private String json;
 
+    /**
+     * 当前小部件宽高
+     * */
+    private int width;
+    private int height;
+
     public WidgetInfo() {
     }
 
-    public WidgetInfo(int appWidgetId, String customWidgetId, String json) {
+
+    public WidgetInfo(int appWidgetId, String customWidgetId, String json, int width, int height) {
         this.appWidgetId = appWidgetId;
         this.customWidgetId = customWidgetId;
         this.json = json;
+        this.width = width;
+        this.height = height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     public int getAppWidgetId() {

@@ -5,12 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.view.KeyEvent;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
+import cn.surine.element.lib_event.Action;
 
 /**
  * Intro：BaseActivity for project
@@ -134,4 +137,35 @@ public abstract class BaseActivity extends AppCompatActivity {
         fManager.close(fragment);
     }
 
+    /**pop*/
+    public void close(){
+        fManager.close();
+    }
+
+
+    /**get the fragment count in the stack*/
+    public int getStackFragmentCount(){
+       return fManager.getStackFragmentCount();
+    }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            int count = getStackFragmentCount();
+            if (count > 1) {
+                close();
+            } else {
+                finish();
+            }
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

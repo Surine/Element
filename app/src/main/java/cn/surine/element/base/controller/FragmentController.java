@@ -23,6 +23,7 @@ public class FragmentController {
         ft = fm.beginTransaction();
     }
 
+
     private static class Instance{
         @SuppressLint("StaticFieldLeak")
         static FragmentController INSTANCE;
@@ -39,6 +40,9 @@ public class FragmentController {
         if(activity.fContainer() == activity.NULL_CONTAINER){
             throw new IllegalArgumentException("fragment container is error");
         }else{
+            ft = fm.beginTransaction();
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            ft.addToBackStack(null);
             ft.add(activity.fContainer(),fragment).commit();
         }
     }
@@ -47,19 +51,37 @@ public class FragmentController {
         if(activity.fContainer() == activity.NULL_CONTAINER){
             throw new IllegalArgumentException("fragment container is error");
         }else{
+            ft = fm.beginTransaction();
+            ft.addToBackStack(null);
             ft.replace(activity.fContainer(),fragment).commit();
         }
     }
 
     public void close(Fragment fragment){
+        ft = fm.beginTransaction();
         ft.remove(fragment).commit();
     }
 
+
+    public void close() {
+        ft = fm.beginTransaction();
+        if(fm.getBackStackEntryCount() > 0){
+            fm.popBackStackImmediate();
+        }
+    }
+
+
+    public int getStackFragmentCount(){
+        return fm.getBackStackEntryCount();
+    }
+
     public void hide(Fragment fragment){
+        ft = fm.beginTransaction();
         ft.hide(fragment).commit();
     }
 
     public void show(Fragment fragment){
+        ft = fm.beginTransaction();
         ft.show(fragment).commit();
     }
 }

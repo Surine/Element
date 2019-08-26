@@ -1,0 +1,100 @@
+{
+  "productInfo": {
+    "versionCode":1,
+    "versionName": "1.0.0",
+    "name":"聊天小部件",
+    "description":"一个聊天小部件",
+    "author":"Surine",
+    "src": 0,
+    "contact":"coolapk@洛必达不忧伤",
+    "tags":[
+      "classic","chat"
+    ]
+  },
+  "rootView": {
+    "width": -1,
+    "height": -1,
+    "views": [
+      {
+        "type":"Image",
+        "action": "IMAGE_CLICK|LEFT_HEAD|NULL",
+        "name": "左头像",
+        "width": 55,
+        "height": 55,
+        "x_offset": 0,
+        "y_offset": 0,
+        "properties": [
+          {"propertyName":"src","propertyType":"int","propertyValue":"默认头像src"},
+          {"propertyName":"corners","propertyType":"int","propertyValue":"180"}
+        ]
+      },
+      {
+        "type": "Shape",
+        "width": 200,
+        "height": 51,
+        "name": "左气泡",
+        "x_offset": 75,
+        "y_offset": 2,
+        "properties":[
+          {"propertyName":"backgroundColor","propertyType":"int","propertyValue":"#D81B60"},
+          {"propertyName":"shapeType","propertyType":"int","propertyValue":"1"},
+          {"propertyName":"corners","propertyType":"int","propertyValue":"20"}
+        ]
+      },
+      {
+        "type": "Text",
+        "width": 200,
+        "height": 51,
+        "x_offset": 75,
+        "name": "左文字",
+        "y_offset": 2,
+        "action": "IMAGE_CLICK|LEFT_TEXT|NULL",
+        "properties":[
+          {"propertyName":"textColor","propertyType":"int","propertyValue":"#FFFFFF"},
+          {"propertyName":"textSize","propertyType":"int","propertyValue":"17"},
+          {"propertyName":"text","propertyType":"String","propertyValue":"夜色逐渐低沉，"}
+        ]
+      },
+      {
+        "type": "Shape",
+        "width": 200,
+        "height": 51,
+        "name": "右气泡",
+        "x_offset": 112,
+        "y_offset": 65,
+        "properties":[
+          {"propertyName":"backgroundColor","propertyType":"int","propertyValue":"#FFFFFF"},
+          {"propertyName":"shapeType","propertyType":"int","propertyValue":"1"},
+          {"propertyName":"corners","propertyType":"int","propertyValue":"20"}
+        ]
+      },
+      {
+        "type": "Text",
+        "width": 200,
+        "height": 51,
+        "x_offset": 112,
+        "name": "右文字",
+        "action": "IMAGE_CLICK|RIGHT_TEXT|NULL",
+        "y_offset": 65,
+        "properties":[
+          {"propertyName":"textColor","propertyType":"int","propertyValue":"#000000"},
+          {"propertyName":"textSize","propertyType":"int","propertyValue":"17"},
+          {"propertyName":"text","propertyType":"String","propertyValue":"情话不再撩人……"}
+        ]
+      },
+      {
+        "type":"Image",
+        "width": 55,
+        "action": "IMAGE_CLICK|RIGHT_HEAD|NULL",
+        "height": 55,
+        "name": "右头像",
+        "x_offset": 326,
+        "y_offset": 65,
+        "properties": [
+          {"propertyName":"corners","propertyType":"int","propertyValue":"180"}
+        ]
+      }
+    ]
+  }
+
+}

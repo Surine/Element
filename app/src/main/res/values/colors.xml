@@ -5,4 +5,11 @@
     <color name="colorAccent">#D81B60</color>
     <color name="widget_no_view_color">#87000000</color>
     <color name="white">#fff</color>
+    <color name="black">#000</color>
+    <color name="card_background_color">#E7FFFFFF</color>
+    <color name="background_color">#F1F1F1</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="event_show">#A109A9EF</color>
+
+    <color name="pattern">#EF5350</color>
 </resources>

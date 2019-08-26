@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--实现一个colorful的button-->
+    <declare-styleable name="ColorfulButton">
+        <!--选中合适的shape-->
+        <attr name="shape" format="integer">
+            <enum name="RECTANGLE" value="0" />
+            <enum name="OVAL" value="1" />
+            <enum name="LINE" value="2" />
+            <enum name="RING" value="3" />
+        </attr>
+        <!--颜色-->
+        <attr name="color" format="color"/>
+        <attr name="pressColor" format="color"/>
+        <attr name="focusColor" format="color"/>
+        <attr name="rippleColor" format="color"/>
+        <!--圆角值-->
+        <attr name="cornerRadius" format="dimension"/>
+
+    </declare-styleable>
+
+
+    <!--圆角图片的属性-->
+    <declare-styleable name="RadiusImageView">
+        <!--圆角半径-->
+        <attr name="RoundRectRadius" format="dimension" />
+        <!--上下左右是否要有圆角-->
+        <attr name="LeftTopRound" format="boolean" />
+        <attr name="LeftBottomRound" format="boolean" />
+        <attr name="RightTopRound" format="boolean" />
+        <attr name="RightBottomRound" format="boolean" />
+    </declare-styleable>
+</resources>
